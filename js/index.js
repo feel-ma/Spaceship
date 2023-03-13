@@ -2,6 +2,8 @@ const myCanvas = document.getElementById("canvas");
 const ctx = myCanvas.getContext("2d");
 
 import Map from "./map.js";
+import Ship from "./ship.js";
+
 
 const riverOne = new Map(ctx, "./images/river.jpg", 0)
 const riverTwo = new Map(ctx, "./images/river.jpg", -700)
@@ -10,49 +12,16 @@ const riverTwo = new Map(ctx, "./images/river.jpg", -700)
 document.addEventListener("mousemove", getMousePos, false);
 
 myCanvas.style.cursor = "none";
-
-
-
-
-/* function getMousePos(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) {
-    car.x = relativeX - car.widht / 2;
-  }
-}
-  */
-
-
-
+myCanvas.oncontextmenu = function (e) {
+  e.preventDefault();
+};
 
 function getMousePos( evt) {
   var rect = myCanvas.getBoundingClientRect();
   console.log(evt)
   car.x= evt.clientX - rect.left -25
   car.y=evt.clientY- rect.top -35
-/*   return {
-    x: evt.clientX ,//- rect.left,
-    y: evt.clientY// - rect.top
-  }; */
 }
-
-
-function movement(evt) {
-  var pos = getMousePos(myCanvas, evt);
-
-  ctx.fillStyle = "#000000";
-  ctx.fillRect (pos.x, pos.y, 4, 4);
-  //console.log(evt)
-}
- 
-
-
-
-
-
-
-
-
 
 const blocks = [];
 
@@ -65,7 +34,7 @@ const blocks = [];
 
 
 let carImg = new Image();
-carImg.src = "./images/car.png";
+carImg.src = "./images/fighter.png";
 
 function getRandom(min, max) {
   return Math.random() * (max - min) + min;
@@ -123,14 +92,14 @@ window.onload = () => {
 };
 
 let counter = 0;
-let level= 3;
 
-document.addEventListener("keydown", (key) => {
-  switch (key.code) {
-    case "ArrowLeft":
-      car.moveLeft();
-    case "ArrowRight":
-      car.moveRight();
+document.addEventListener("mousedown", (key) => {
+  switch (key.button) {
+    case 0:
+      console.log("left click")
+      break
+    case 2:
+      console.log("right click")
   }
 });
 
