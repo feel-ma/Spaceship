@@ -10,7 +10,7 @@ class Ship{
 
 
     draw() {
-        ctx.drawImage(carImg, this.x, this.y, 50, 70);
+        this.ctx.drawImage(this.img, this.x, this.y, 50, 70);
       }
 
 

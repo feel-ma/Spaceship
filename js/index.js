@@ -4,6 +4,8 @@ const ctx = myCanvas.getContext("2d");
 import Map from "./map.js";
 import Ship from "./ship.js";
 
+const ship = new Ship(ctx,"./images/fighter.png" )
+
 
 const riverOne = new Map(ctx, "./images/river.jpg", 0)
 const riverTwo = new Map(ctx, "./images/river.jpg", -700)
@@ -19,18 +21,9 @@ myCanvas.oncontextmenu = function (e) {
 function getMousePos( evt) {
   var rect = myCanvas.getBoundingClientRect();
   console.log(evt)
-  car.x= evt.clientX - rect.left -25
-  car.y=evt.clientY- rect.top -35
+  ship.x= evt.clientX - rect.left -25
+  ship.y=evt.clientY- rect.top -35
 }
-
-const blocks = [];
-
-/* river.onload = () => {
-  ctx.drawImage(river, 0, 0, 500, 700);
-};
- window.onload = () => {
-  ctx.drawImage(carImg, car.x, car.y, 50, 70);
-}; */
 
 
 let carImg = new Image();
@@ -40,7 +33,7 @@ function getRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-class blocksC {
+/* class blocksC {
   constructor() {
     this.x = 30+getRandom(10,400);
     this.y = 0;
@@ -56,34 +49,11 @@ class blocksC {
   move() {
     this.y += 1;
   }
-}
+} */
 
 let score=0 
 let c = 0;
 
-
-
-class carC {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  draw() {
-    ctx.drawImage(carImg, this.x, this.y, 50, 70);
-  }
-
-  moveLeft() {
-    this.x -= 8;
-  }
-  moveRight() {
-    this.x += 4;
-  }
-}
-
-let car = new carC(225, 600);
-//let block = new blocksC(100, 50,)
-blocks.push(new blocksC(100, 50));
 
 window.onload = () => {
   document.getElementById("start-button").onclick = () => {
@@ -113,8 +83,10 @@ function startGame() {
     riverTwo.scroll()
     if(riverOne.y==700)riverOne.y=-700
     if(riverTwo.y==700)riverTwo.y=-700
+
+    ship.draw()
     
-    car.draw();
+    
     /* if (Math.random() * 1000 <= level) {
       blocks.push(new blocksC(100, 50));
     }
