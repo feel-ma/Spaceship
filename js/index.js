@@ -9,7 +9,8 @@ import Enemy from "./enemies.js";
 const ship = new Ship(ctx, "./images/fighter.png"); //creating the object for the game
 const riverOne = new Map(ctx, "./images/river.jpg", 0);
 const riverTwo = new Map(ctx, "./images/river.jpg", -700);
-const enemyArray = [];
+const enemyArrayL = [];
+const enemyArrayR = [];
 
 myCanvas.style.cursor = "none"; //deactivating right mouse click on canvas
 myCanvas.oncontextmenu = function (e) {
@@ -51,6 +52,13 @@ function shotRocket() {
   else myShots.push(new Projectile(ctx, "./images/pro.png", ship.x, ship.y));
 }
 
+for(let shot of myShots){
+  if (shot.y=0) myShots.shift()
+  
+}
+
+console.log(myShots.length)
+
 let score = 0;
 let c = 0;
 
@@ -60,29 +68,47 @@ window.onload = () => {
   };
 };
 
-let formationC=0
+let formationC = 0;
+let enemySideC = 0;
 let counter = 0;
 
-
-function formationOne(x){
-  if(formationC<=150){
-    x.moveD()
-    formationC++
-  } 
-  else if( formationC > 150 && formationC<=250){
-    x.moveR()
-    formationC++
-  } 
-  else if( formationC> 250 && formationC<=330){
-    x.moveU()
-    formationC++
-  } 
-  else if(formationC> 330 && formationC<=400){
-    x.moveL()
-    formationC++
-  } 
-  else formationC=0
+function formationOne(x) {
+  if (formationC <= 150) {
+    x.moveD();
+    formationC++;
+  } else if (formationC > 150 && formationC <= 250) {
+    x.moveR();
+    formationC++;
+  } else if (formationC > 250 && formationC <= 330) {
+    x.moveU();
+    formationC++;
+  } else if (formationC > 330 && formationC <= 400) {
+    x.moveL();
+    formationC++;
+  } else formationC = 0;
 }
+
+function formationOneR(x) {
+  if (formationC <= 150) {
+    x.moveD();
+    formationC++;
+  } else if (formationC > 150 && formationC <= 250) {
+    x.moveL();
+    formationC++;
+  } else if (formationC > 250 && formationC <= 330) {
+    x.moveU();
+    formationC++;
+  } else if (formationC > 330 && formationC <= 400) {
+    x.moveR();
+    formationC++;
+  } else formationC = 0;
+}
+
+let enemyMoveC = 0;
+
+
+enemyArrayL.push(new Enemy(ctx, "./images/enemy.png", 50));
+enemyArrayR.push(new Enemy(ctx, "./images/enemy.png", 350));
 
 function startGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -101,16 +127,56 @@ function startGame() {
       shot.move();
       shot.draw();
     }
+   
 
-    if (counter % 100 === 0) {
-      enemyArray.push(new Enemy(ctx, "./images/enemy.png", 50 ));
+   /*  if (counter % 100 === 0) {
+      if (enemySideC % 2 === 0)
+        enemyArrayL.push(new Enemy(ctx, "./images/enemy.png", 50));
+      else {
+        enemyArrayR.push(new Enemy(ctx, "./images/enemy.png", 350));
+      }
+      enemySideC++;
+    } */
+
+    for (const e of enemyArrayL) {
+      e.draw();
+      formationOne(e);
+
+    for (let shot of myShots) {
+      if (
+        ((shot.x > e.x && shot.x < e.x + e.widht) ||
+          (shot.x < e.x && shot.x + 20 > e.x + e.widht) ||
+          (shot.x + 20 > e.x && shot.x + 20 < e.x + e.widht)) &&
+        ((shot.y > e.y && shot.y < e.y + e.height) ||
+          (shot.y + 20 > e.y && shot.y + 20 < e.y + e.height) ||
+          (shot.y < e.y && shot.y + 20 > e.y + e.height))
+      )
+        e.life -= 20;
+
+      if (e.life === 0) enemyArrayL.shift();
     }
 
-    for(const e of enemyArray){
-      e.draw()
-     formationOne(e)
-     //formationC++
     }
+    for (const e of enemyArrayR) {
+      e.draw();
+      formationOneR(e);
+    for (let shot of myShots) {
+      if (
+        ((shot.x > e.x && shot.x < e.x + e.widht) ||
+          (shot.x < e.x && shot.x + 20 > e.x + e.widht) ||
+          (shot.x + 20 > e.x && shot.x + 20 < e.x + e.widht)) &&
+        ((shot.y > e.y && shot.y < e.y + e.height) ||
+          (shot.y + 20 > e.y && shot.y + 20 < e.y + e.height) ||
+          (shot.y < e.y && shot.y + 20 > e.y + e.height))
+      )
+       console.log("HIT")
+        e.life -= 20;
+    }
+    if (e.life === 0) enemyArrayR.shift();
+    }
+
+
+    //enemyMoveC++
 
     /* if (Math.random() * 1000 <= level) {
       blocks.push(new blocksC(100, 50));

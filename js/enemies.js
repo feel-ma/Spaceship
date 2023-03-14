@@ -5,10 +5,12 @@ class Enemy{
         this.y= 0;
         this.img= new Image;
         this.img.src=imgSrc;
+        this.widht=50;
+        this.height= 70;
     }
 
     draw() {
-        this.ctx.drawImage(this.img, this.x, this.y, 50, 70);
+        this.ctx.drawImage(this.img, this.x, this.y, this.widht, this.height);
       }
 
     moveL(){
