@@ -5,6 +5,7 @@ class Ship{
         this.y= 600;
         this.img= new Image;
         this.img.src=imgSrc;
+        this.life=100
 
     }
 

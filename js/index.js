@@ -4,10 +4,12 @@ const ctx = myCanvas.getContext("2d");
 import Map from "./map.js"; //importing files
 import Ship from "./ship.js";
 import Projectile from "./projectiles.js";
+import Enemy from "./enemies.js";
 
 const ship = new Ship(ctx, "./images/fighter.png"); //creating the object for the game
 const riverOne = new Map(ctx, "./images/river.jpg", 0);
 const riverTwo = new Map(ctx, "./images/river.jpg", -700);
+const enemyArray = [];
 
 myCanvas.style.cursor = "none"; //deactivating right mouse click on canvas
 myCanvas.oncontextmenu = function (e) {
@@ -27,7 +29,7 @@ document.addEventListener("mousedown", (key) => {
   switch (key.button) {
     case 0:
       shotRocket();
-      side++
+      side++;
       break;
     case 2:
       console.log("right click");
@@ -41,10 +43,11 @@ function getRandom(min, max) {
 
 const myShots = [];
 
-let side=0
+let side = 0;
 
 function shotRocket() {
-  if (side%2===0) myShots.push(new Projectile(ctx, "./images/pro.png", ship.x+27, ship.y));
+  if (side % 2 === 0)
+    myShots.push(new Projectile(ctx, "./images/pro.png", ship.x + 27, ship.y));
   else myShots.push(new Projectile(ctx, "./images/pro.png", ship.x, ship.y));
 }
 
@@ -57,7 +60,29 @@ window.onload = () => {
   };
 };
 
+let formationC=0
 let counter = 0;
+
+
+function formationOne(x){
+  if(formationC<=150){
+    x.moveD()
+    formationC++
+  } 
+  else if( formationC > 150 && formationC<=250){
+    x.moveR()
+    formationC++
+  } 
+  else if( formationC> 250 && formationC<=330){
+    x.moveU()
+    formationC++
+  } 
+  else if(formationC> 330 && formationC<=400){
+    x.moveL()
+    formationC++
+  } 
+  else formationC=0
+}
 
 function startGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -72,10 +97,20 @@ function startGame() {
 
     ship.draw();
 
-     for (const shot of myShots){
+    for (const shot of myShots) {
       shot.move();
       shot.draw();
-    } 
+    }
+
+    if (counter % 100 === 0) {
+      enemyArray.push(new Enemy(ctx, "./images/enemy.png", 50 ));
+    }
+
+    for(const e of enemyArray){
+      e.draw()
+     formationOne(e)
+     //formationC++
+    }
 
     /* if (Math.random() * 1000 <= level) {
       blocks.push(new blocksC(100, 50));
