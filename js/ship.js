@@ -1,5 +1,5 @@
 class Ship{
-    constructor(ctx, imgSrc,  ){
+    constructor(ctx, imgSrc  ){
         this.ctx= ctx
         this.x=250;
         this.y= 600;

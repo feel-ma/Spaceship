@@ -142,8 +142,8 @@ function startGame() {
         enemyProjectileArray.splice(i, 1);
       }
     }
-    console.log(enemyProjectileArray.length)
-    console.log(ship.x, ship.y, ship.width, ship.height);
+    //console.log(enemyProjectileArray.length)
+    //console.log(ship.x, ship.y, ship.width, ship.height);
 
 
 
@@ -211,28 +211,30 @@ function startGame() {
       }
     }
 
+    //console.log('Ship:', ship.x, ship.y);
+    //console.log('Projectile:', enemyProjectileArray[0].x, enemyProjectileArray[0].y);
+   // console.log(enemyProjectileArray.length)
 
     for (let shot of enemyProjectileArray) { //left array collision detection
+      //console.log('Ship:', ship.x, ship.y);
+      //console.log('Projectile:', enemyProjectileArray[0].x, enemyProjectileArray[0].y);
+  
+     
       if (
-        ((shot.x > ship.x && shot.x < ship.x + ship.widht) ||
-          (shot.x < ship.x && shot.x + 20 > ship.x + ship.widht) ||
-          (shot.x + 20 > ship.x && shot.x + 20 < ship.x + ship.widht)) &&
-        ((shot.y > ship.y && shot.y < ship.y + ship.height) ||
-          (shot.y + 20 > ship.y && shot.y + 20 < ship.y + ship.height) ||
-          (shot.y < ship.y && shot.y + 20 > ship.y + ship.height))
-      )
-     { console.log("HIT SHIP", e.life)
+        shot.x < ship.x + ship.widht &&
+        shot.x + 20 > ship.x &&
+        shot.y < ship.y + ship.widht &&
+        shot.y + 20 > ship.y
+     ) {
+        console.log('Collision detected');
         ship.life -= 20;
-        enemyProjectileArray.splice(enemyProjectileArray.indexOf(shot), 1); //remove shot from the game
-      }
+        enemyProjectileArray.splice(enemyProjectileArray.indexOf(shot), 1);
+     }
     }
 
     if(ship.life===0)gameOver(interval)
 
-    
-
-
-    //enemyMoveC++
+  
 
     /* if (Math.random() * 1000 <= level) {
       blocks.push(new blocksC(100, 50));
