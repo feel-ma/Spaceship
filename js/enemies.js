@@ -7,6 +7,7 @@ class Enemy{
         this.img.src=imgSrc;
         this.widht=50;
         this.height= 70;
+        this.life=100;
     }
 
     draw() {

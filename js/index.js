@@ -5,12 +5,14 @@ import Map from "./map.js"; //importing files
 import Ship from "./ship.js";
 import Projectile from "./projectiles.js";
 import Enemy from "./enemies.js";
+import EProjectile from "./enemyP.js";
 
 const ship = new Ship(ctx, "./images/fighter.png"); //creating the object for the game
 const riverOne = new Map(ctx, "./images/river.jpg", 0);
 const riverTwo = new Map(ctx, "./images/river.jpg", -700);
 const enemyArrayL = [];
 const enemyArrayR = [];
+const enemyProjectileArray=[]
 
 myCanvas.style.cursor = "none"; //deactivating right mouse click on canvas
 myCanvas.oncontextmenu = function (e) {
@@ -42,8 +44,7 @@ function getRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-const myShots = [];
-
+const myShots = []; //shots array and side selector
 let side = 0;
 
 function shotRocket() {
@@ -57,7 +58,7 @@ for(let shot of myShots){
   
 }
 
-console.log(myShots.length)
+
 
 let score = 0;
 let c = 0;
@@ -71,6 +72,7 @@ window.onload = () => {
 let formationC = 0;
 let enemySideC = 0;
 let counter = 0;
+let enemyShotRate=0 
 
 function formationOne(x) {
   if (formationC <= 150) {
@@ -103,10 +105,6 @@ function formationOneR(x) {
     formationC++;
   } else formationC = 0;
 }
-
-let enemyMoveC = 0;
-
-
 enemyArrayL.push(new Enemy(ctx, "./images/enemy.png", 50));
 enemyArrayR.push(new Enemy(ctx, "./images/enemy.png", 350));
 
@@ -114,6 +112,7 @@ function startGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const interval = setInterval(() => {
     counter++;
+    enemyShotRate++
     riverOne.draw();
     riverOne.scroll();
     riverTwo.draw();
@@ -123,26 +122,48 @@ function startGame() {
 
     ship.draw();
 
-    for (const shot of myShots) {
+    for (const shot of myShots) { //shot moving
       shot.move();
       shot.draw();
     }
+
+    for (let i = myShots.length - 1; i >= 0; i--) { //remove shots from game once they exit canvas
+      if (myShots[i].y <= 0) {
+        myShots.splice(i, 1);
+      }
+    }
+    for (const shot of enemyProjectileArray) { //Enemy shot 
+      shot.move();
+      shot.draw();
+    }
+
+    for (let i = enemyProjectileArray.length - 1; i >= 0; i--) { //remove shots from game once they exit canvas
+      if (enemyProjectileArray[i].y >= 700) {
+        enemyProjectileArray.splice(i, 1);
+      }
+    }
+    console.log(enemyProjectileArray.length)
+    console.log(ship.x, ship.y, ship.width, ship.height);
+
+
+
    
 
-   /*  if (counter % 100 === 0) {
+   if (counter % 300 === 0) { //enemy generator
       if (enemySideC % 2 === 0)
         enemyArrayL.push(new Enemy(ctx, "./images/enemy.png", 50));
       else {
         enemyArrayR.push(new Enemy(ctx, "./images/enemy.png", 350));
       }
       enemySideC++;
-    } */
+    } 
 
-    for (const e of enemyArrayL) {
+    for (const e of enemyArrayL) { //left array moving
       e.draw();
       formationOne(e);
+      if(enemyShotRate%100==0)enemyProjectileArray.push(new EProjectile(ctx,"./images/bullet(1).png", e.x, e.y ))
 
-    for (let shot of myShots) {
+    for (let shot of myShots) { //left array collision detection
       if (
         ((shot.x > e.x && shot.x < e.x + e.widht) ||
           (shot.x < e.x && shot.x + 20 > e.x + e.widht) ||
@@ -151,15 +172,18 @@ function startGame() {
           (shot.y + 20 > e.y && shot.y + 20 < e.y + e.height) ||
           (shot.y < e.y && shot.y + 20 > e.y + e.height))
       )
+     { console.log("HIT LEFT", e.life)
         e.life -= 20;
-
-      if (e.life === 0) enemyArrayL.shift();
+        myShots.splice(myShots.indexOf(shot), 1); //remove shot from the game
+      }
     }
 
     }
-    for (const e of enemyArrayR) {
+    for (const e of enemyArrayR) { // right array
       e.draw();
       formationOneR(e);
+      if(enemyShotRate%100==0)enemyProjectileArray.push(new EProjectile(ctx,"./images/bullet(1).png", e.x, e.y ))
+      
     for (let shot of myShots) {
       if (
         ((shot.x > e.x && shot.x < e.x + e.widht) ||
@@ -168,12 +192,44 @@ function startGame() {
         ((shot.y > e.y && shot.y < e.y + e.height) ||
           (shot.y + 20 > e.y && shot.y + 20 < e.y + e.height) ||
           (shot.y < e.y && shot.y + 20 > e.y + e.height))
-      )
-       console.log("HIT")
+      ){
+       console.log("HIT RIGHT", e.life)
         e.life -= 20;
+        myShots.splice(myShots.indexOf(shot), 1);
+      }
     }
-    if (e.life === 0) enemyArrayR.shift();
     }
+
+    for (let i = enemyArrayL.length - 1; i >= 0; i--) { //check the life of the enemie and remove the dead one
+      if (enemyArrayL[i].life <= 0) {
+        enemyArrayL.splice(i, 1);
+      }
+    }
+    for (let i = enemyArrayR.length - 1; i >= 0; i--) {
+      if (enemyArrayR[i].life <= 0) {
+        enemyArrayR.splice(i, 1);
+      }
+    }
+
+
+    for (let shot of enemyProjectileArray) { //left array collision detection
+      if (
+        ((shot.x > ship.x && shot.x < ship.x + ship.widht) ||
+          (shot.x < ship.x && shot.x + 20 > ship.x + ship.widht) ||
+          (shot.x + 20 > ship.x && shot.x + 20 < ship.x + ship.widht)) &&
+        ((shot.y > ship.y && shot.y < ship.y + ship.height) ||
+          (shot.y + 20 > ship.y && shot.y + 20 < ship.y + ship.height) ||
+          (shot.y < ship.y && shot.y + 20 > ship.y + ship.height))
+      )
+     { console.log("HIT SHIP", e.life)
+        ship.life -= 20;
+        enemyProjectileArray.splice(enemyProjectileArray.indexOf(shot), 1); //remove shot from the game
+      }
+    }
+
+    if(ship.life===0)gameOver(interval)
+
+    
 
 
     //enemyMoveC++

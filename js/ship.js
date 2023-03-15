@@ -6,12 +6,14 @@ class Ship{
         this.img= new Image;
         this.img.src=imgSrc;
         this.life=100
+        this.widht=50
+        this.hight=70
 
     }
 
 
     draw() {
-        this.ctx.drawImage(this.img, this.x, this.y, 50, 70);
+        this.ctx.drawImage(this.img, this.x, this.y, this.widht, this.hight);
       }
 
 
