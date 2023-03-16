@@ -14,6 +14,7 @@ const riverTwo = new Map(ctx, "./images/river.jpg", -700);
 const enemyArrayL = [];
 const enemyArrayR = [];
 const enemyProjectileArray=[]
+const buffArray =[]
 
 myCanvas.style.cursor = "none"; //deactivating right mouse click on canvas
 myCanvas.oncontextmenu = function (e) {
@@ -229,6 +230,24 @@ function startGame() {
     if(ship.life===0)gameOver(interval)
 
     lifeBar()
+    applyBuff()
+
+    for(const buff of buffArray){
+      buff.draw()
+      buff.move()
+    }
+
+    for (let buff of buffArray) { //enemy shots collision detection
+      if (
+        buff.x < ship.x + ship.widht &&
+        buff.x + 30 > ship.x &&
+        buff.y < ship.y + ship.widht &&
+        buff.y + 30 > ship.y
+     ) {
+        ship.life += 20;
+        buffArray.splice(buffArray.indexOf(buff), 1);
+     }
+    }
 
     c++;
     ctx.fillStyle = "orange";
@@ -251,18 +270,19 @@ function gameOver(interval) {
 
 
 function lifeBar(){
-
   ctx.font = "20px Arial";
   ctx.strokeText("YOUR LIFE", 50, 650)
-
-
-
   ctx.fillStyle = "red"
-  if (ship.life===100) ctx.fillRect(50, 650, 400, 20)
+  if (ship.life>=100) ctx.fillRect(50, 650, 400, 20)
   else if (ship.life===80) ctx.fillRect(50, 650, 300, 20)
   else if (ship.life===60) ctx.fillRect(50, 650, 200, 20)
   else if (ship.life===40) ctx.fillRect(50, 650, 100, 20)
   else if (ship.life===20)ctx.fillRect(50, 650, 50, 30)
   else  return
+}
+
+function applyBuff(){
+  if(getRandom(0,1000)<=2) buffArray.push(new Buff(ctx, "./images/buff1.png", getRandom(50,450) ))
+
 
 }
