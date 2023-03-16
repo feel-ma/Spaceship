@@ -6,6 +6,7 @@ import Ship from "./ship.js";
 import Projectile from "./projectiles.js";
 import Enemy from "./enemies.js";
 import EProjectile from "./enemyP.js";
+import Buff from "./buff.js";
 
 const ship = new Ship(ctx, "./images/fighter.png"); //creating the object for the game
 const riverOne = new Map(ctx, "./images/river.jpg", 0);
@@ -202,31 +203,24 @@ function startGame() {
 
     for (let i = enemyArrayL.length - 1; i >= 0; i--) { //check the life of the enemie and remove the dead one
       if (enemyArrayL[i].life <= 0) {
+        score++
         enemyArrayL.splice(i, 1);
       }
     }
     for (let i = enemyArrayR.length - 1; i >= 0; i--) {
       if (enemyArrayR[i].life <= 0) {
+        score++
         enemyArrayR.splice(i, 1);
       }
     }
 
-    //console.log('Ship:', ship.x, ship.y);
-    //console.log('Projectile:', enemyProjectileArray[0].x, enemyProjectileArray[0].y);
-   // console.log(enemyProjectileArray.length)
-
-    for (let shot of enemyProjectileArray) { //left array collision detection
-      //console.log('Ship:', ship.x, ship.y);
-      //console.log('Projectile:', enemyProjectileArray[0].x, enemyProjectileArray[0].y);
-  
-     
+    for (let shot of enemyProjectileArray) { //enemy shots collision detection
       if (
         shot.x < ship.x + ship.widht &&
         shot.x + 20 > ship.x &&
         shot.y < ship.y + ship.widht &&
         shot.y + 20 > ship.y
      ) {
-        console.log('Collision detected');
         ship.life -= 20;
         enemyProjectileArray.splice(enemyProjectileArray.indexOf(shot), 1);
      }
@@ -234,42 +228,8 @@ function startGame() {
 
     if(ship.life===0)gameOver(interval)
 
-  
+    lifeBar()
 
-    /* if (Math.random() * 1000 <= level) {
-      blocks.push(new blocksC(100, 50));
-    }
-    for (bb of blocks) {
-      bb.move();
-      bb.draw();
-
-      if (
-        (
-          car.x > bb.x && car.x < bb.x + bb.widht ||
-          car.x < bb.x && car.x + 50 > bb.x + bb.widht ||
-          car.x + 50 > bb.x && car.x + 50 < bb.x + bb.widht
-        )&&(
-          (car.y > bb.y && car.y < bb.y + bb.height) ||
-            (car.y + 70 > bb.y && car.y + 70 < bb.y + bb.height) ||
-            (car.y < bb.y && car.y + 70 > bb.y + bb.height)
-        ) 
-      ) {
-        console.log("HIT HIT HIT");
-        gameOver(interval)
-      
-      }
-      if (car.x<=30 ||car.x+50 >=465) {
-        gameOver(interval)
-        
-        }
-      if (c % 100000 == 0) {
-        level++
-      }
-      if (c % 1000 == 0) {
-        score++
-      }
-
-    } */
     c++;
     ctx.fillStyle = "orange";
     ctx.font = "40px Arial";
@@ -285,33 +245,24 @@ function gameOver(interval) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, 500, 700);
   ctx.fillStyle = "purple";
-
   ctx.fillText("You failed as usual!!", 50, 350);
   clearInterval(interval);
-  blocks = [1, 2, 3];
 }
 
-/* 
-const imageURL = ["./images/road.png","./images/car.png"];
-const images = [];
-let imageCount = 2;
 
-function allLoaded(){
-    // all images have loaded and can be rendered
-    ctx.drawImage(images[1],0,0, 500, 700); // draw background
-    ctx.drawImage(images[0],0,0, 500, 700); // draw foreground
+function lifeBar(){
+
+  ctx.font = "20px Arial";
+  ctx.strokeText("YOUR LIFE", 50, 650)
+
+
+
+  ctx.fillStyle = "red"
+  if (ship.life===100) ctx.fillRect(50, 650, 400, 20)
+  else if (ship.life===80) ctx.fillRect(50, 650, 300, 20)
+  else if (ship.life===60) ctx.fillRect(50, 650, 200, 20)
+  else if (ship.life===40) ctx.fillRect(50, 650, 100, 20)
+  else if (ship.life===20)ctx.fillRect(50, 650, 50, 30)
+  else  return
+
 }
-
-// iterate each image URL, create, load, and add it to the images array
-imageURL.forEach(src => {  // for each image url
-     const image = new Image();
-     image.src = src;
-     image.onload = ()=>{ 
-         imageCount += 1;
-         if(imageCount === imageURL.length){ 
-             allLoaded(); 
-         }
-     }
-     images.push(image); 
-
-}); */
