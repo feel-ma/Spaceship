@@ -7,12 +7,23 @@ import Projectile from "./projectiles.js";
 import Enemy from "./enemies.js";
 import EProjectile from "./enemyP.js";
 import Buff from "./buff.js";
+import Terrestrial from "./Terrestrial.js";
+import Rocket from "./rockets.js";
+import Bomb from "./bombs.js";
 
 const ship = new Ship(ctx, "./images/fighter.png"); //creating the object for the game
 const riverOne = new Map(ctx, "./images/river.jpg", 0);
 const riverTwo = new Map(ctx, "./images/river.jpg", -700);
 const enemyArrayL = [];
 const enemyArrayR = [];
+const terrestrialArrayL = [];
+const terrestrialArrayR = [];
+const rocketArray=[]
+const rocketArrayR=[]
+const myBombs=[]
+
+
+
 const enemyProjectileArray=[]
 const buffArray =[]
 
@@ -37,7 +48,7 @@ document.addEventListener("mousedown", (key) => {
       side++;
       break;
     case 2:
-      console.log("right click");
+     dropBomb()
   }
 });
 
@@ -53,6 +64,12 @@ function shotRocket() {
   if (side % 2 === 0)
     myShots.push(new Projectile(ctx, "./images/pro.png", ship.x + 27, ship.y));
   else myShots.push(new Projectile(ctx, "./images/pro.png", ship.x, ship.y));
+}
+
+function dropBomb(){
+  myBombs.push(new Bomb(ctx, "./images/bombbomb.png", ship.x + 27, ship.y));
+
+
 }
 
 for(let shot of myShots){
@@ -75,6 +92,7 @@ let formationC = 0;
 let enemySideC = 0;
 let counter = 0;
 let enemyShotRate=0 
+let terrestrialC =0
 
 function formationOne(x) {
   if (formationC <= 150) {
@@ -128,6 +146,10 @@ function startGame() {
       shot.move();
       shot.draw();
     }
+    for (const shot of myBombs) { //shot moving
+      shot.move();
+      shot.draw();
+    }
 
     for (let i = myShots.length - 1; i >= 0; i--) { //remove shots from game once they exit canvas
       if (myShots[i].y <= 0) {
@@ -144,11 +166,48 @@ function startGame() {
         enemyProjectileArray.splice(i, 1);
       }
     }
-    //console.log(enemyProjectileArray.length)
-    //console.log(ship.x, ship.y, ship.width, ship.height);
+   
+    for (let i = rocketArray.length - 1; i >= 0; i--) { //remove rockets from game once they exit canvas
+      if (rocketArray[i].y >= 700|| rocketArray[i].x >= 500|| rocketArray[i].x <=0 ) {
+        rocketArray.splice(i, 1);
+      }
+    }
+    for (let i = rocketArrayR.length - 1; i >= 0; i--) { //remove rockets from game once they exit canvas
+      if (rocketArrayR[i].y >= 700|| rocketArrayR[i].x >= 500|| rocketArrayR[i].x <=0 ) {
+        rocketArrayR.splice(i, 1);
+      }
+    }
+
+    for (const shot of rocketArray) { //rockets shot 
+      shot.move();
+      shot.draw();
+      if (
+        shot.x < ship.x + ship.widht &&
+        shot.x + 20 > ship.x &&
+        shot.y < ship.y + ship.widht &&
+        shot.y + 20 > ship.y
+     ) {
+        ship.life -= 50;
+        rocketArray.splice(rocketArray.indexOf(shot), 1);
+     }
+    }
+
+    for (const shot of rocketArrayR) { //rockets shot 
+      shot.move();
+      shot.draw();
+      if (
+        shot.x < ship.x + ship.widht &&
+        shot.x + 20 > ship.x &&
+        shot.y < ship.y + ship.widht &&
+        shot.y + 20 > ship.y
+     ) {
+        ship.life -= 50;
+        rocketArrayR.splice(rocketArrayR.indexOf(shot), 1);
+     }
+    }
 
 
-
+   
    
 
    if (counter % 300 === 0) { //enemy generator
@@ -157,6 +216,13 @@ function startGame() {
       else {
         enemyArrayR.push(new Enemy(ctx, "./images/enemy.png", 350));
       }
+      if (terrestrialC === 10)
+        terrestrialArrayL.push(new Terrestrial(ctx, "./images/missilel.png", 5));
+      else if (terrestrialC==20) {
+        terrestrialArrayR.push(new Terrestrial(ctx, "./images/missiler.png", 450));
+        terrestrialC=0
+      }
+      terrestrialC++
       enemySideC++;
     } 
 
@@ -164,6 +230,13 @@ function startGame() {
       e.draw();
       formationOne(e);
       if(enemyShotRate%100==0)enemyProjectileArray.push(new EProjectile(ctx,"./images/bullet(1).png", e.x, e.y ))
+
+      if (
+        e.x < ship.x + ship.widht &&
+        e.x + 20 > ship.x &&
+        e.y < ship.y + ship.widht &&
+        e.y + 20 > ship.y
+     ) gameOver(interval)
 
     for (let shot of myShots) { //left array collision detection
       if (
@@ -185,6 +258,13 @@ function startGame() {
       e.draw();
       formationOneR(e);
       if(enemyShotRate%100==0)enemyProjectileArray.push(new EProjectile(ctx,"./images/bullet(1).png", e.x, e.y ))
+
+      if (
+        e.x < ship.x + ship.widht &&
+        e.x + 20 > ship.x &&
+        e.y < ship.y + ship.widht &&
+        e.y + 20 > ship.y
+     ) gameOver(interval)
       
     for (let shot of myShots) {
       if (
@@ -225,6 +305,22 @@ function startGame() {
         ship.life -= 20;
         enemyProjectileArray.splice(enemyProjectileArray.indexOf(shot), 1);
      }
+    }
+
+    for (const t of terrestrialArrayL){
+      t.draw()
+      t.move()
+      if(enemyShotRate%50==0)rocketArray.push(new Rocket(ctx,"./images/rocket.png", t.x, t.y ))
+
+    }
+
+
+
+    for (const t of terrestrialArrayR){
+      t.draw()
+      t.move()
+      if(enemyShotRate%50==0)rocketArrayR.push(new Rocket(ctx,"./images/rocketR.png", t.x, t.y ))
+
     }
 
     if(ship.life===0)gameOver(interval)

@@ -1,4 +1,4 @@
-class Enemy{
+class Terrestrial{
     constructor(ctx, imgSrc,x){
         this.ctx= ctx
         this.x=x;
@@ -14,26 +14,11 @@ class Enemy{
         this.ctx.drawImage(this.img, this.x, this.y, this.widht, this.height);
       }
 
-    moveL(){
-        this.x-=1
-    }
-
-    moveR(){
-        this.x+=1
-    }
-
-    moveU(){
-        this.y-=1
-    }
-
-    moveD(){
-        this.y+=1
-    }
     move(){
-        
+        this.y+=1
     }
 
 }
 
 
-export default Enemy
+export default Terrestrial

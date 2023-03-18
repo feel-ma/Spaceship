@@ -5,8 +5,6 @@ class Projectile{
         this.y= y;
         this.img= new Image;
         this.img.src=imgSrc;
-        this.life=100;
-
     }
 
 

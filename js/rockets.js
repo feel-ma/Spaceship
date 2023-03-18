@@ -1,4 +1,4 @@
-class EProjectile{
+class Rocket{
     constructor(ctx, imgSrc,x ,y  ){
         this.ctx= ctx
         this.x=x;
@@ -14,10 +14,15 @@ class EProjectile{
       }
 
     move(){
+        this.x+=2
+        this.y+=2
+    } 
+    moveR(){
+        this.x-=2
         this.y+=2
     } 
 }
 
 
 
-export default EProjectile
+export default Rocket
