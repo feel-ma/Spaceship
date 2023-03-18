@@ -109,7 +109,7 @@ function formationOne(x) {
     formationC++;
   } else formationC = 0;
 }
-
+terrestrialArrayR.push(new Terrestrial(ctx, "./images/missiler.png", 450));
 function formationOneR(x) {
   if (formationC <= 150) {
     x.moveD();
@@ -193,7 +193,7 @@ function startGame() {
     }
 
     for (const shot of rocketArrayR) { //rockets shot 
-      shot.move();
+      shot.moveR();
       shot.draw();
       if (
         shot.x < ship.x + ship.widht &&
@@ -370,10 +370,10 @@ function lifeBar(){
   ctx.strokeText("YOUR LIFE", 50, 650)
   ctx.fillStyle = "red"
   if (ship.life>=100) ctx.fillRect(50, 650, 400, 20)
-  else if (ship.life===80) ctx.fillRect(50, 650, 300, 20)
-  else if (ship.life===60) ctx.fillRect(50, 650, 200, 20)
-  else if (ship.life===40) ctx.fillRect(50, 650, 100, 20)
-  else if (ship.life===20)ctx.fillRect(50, 650, 50, 30)
+  else if (ship.life>=80) ctx.fillRect(50, 650, 300, 20)
+  else if (ship.life>=60) ctx.fillRect(50, 650, 200, 20)
+  else if (ship.life>=40) ctx.fillRect(50, 650, 100, 20)
+  else if (ship.life>=20)ctx.fillRect(50, 650, 50, 30)
   else  return
 }
 

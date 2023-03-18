@@ -15,11 +15,11 @@ class Rocket{
 
     move(){
         this.x+=2
-        this.y+=2
+        this.y-=2
     } 
     moveR(){
         this.x-=2
-        this.y+=2
+        this.y-=2
     } 
 }
 

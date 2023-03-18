@@ -15,7 +15,7 @@ class Terrestrial{
       }
 
     move(){
-        this.y+=1
+        this.y+=0.5
     }
 
 }
